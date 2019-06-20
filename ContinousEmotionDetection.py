@@ -73,8 +73,6 @@ def normalizeDataSubjet(annotedTrial,features_label,dataNum):
     
 
 
-annotationAdd = '/user/mmi/emotion/codes/emotion_london/analyses/toYachen.mat'
-annotation =sio.loadmat(annotationAdd)
 
 
 def array2sequence (npArray,maxLen,seqNum,lengthTrial):   
@@ -235,7 +233,9 @@ if __name__ == '__main__':
     epochs = 25
     batchSize = 20
 
-    dataFolder = '/user/mmi/emotion/codes/emotion_london/Features/MAHNOB_with_normalizedface/'
+    dataFolder = './data/Features/'
+    annotationAdd = './data/lable_continous_Mahnob.mat'
+    annotation = sio.loadmat(annotationAdd)
     features_label, dataNum = loadData(dataFolder,annotation['trials_included'])
     faceFe, eegFe, target, lengthTrial = normalizeDataSubjet(annotation['trials_included'],features_label,dataNum)
     maxLen = int(np.max(lengthTrial))
