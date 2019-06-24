@@ -215,6 +215,11 @@ def printRedsult(mse,rmse,pearsonCof,title) :
 
 
 if __name__ == '__main__':
+    
+    #split data parameter
+    trainShare = 0.6
+    valShare   = 0.3
+    
     # Parameter define
     lstmEegLa1 = 64
     lstmEegLa2 = 32
@@ -223,10 +228,6 @@ if __name__ == '__main__':
     lstmFaceLa1 = 19
     lstmFaceLa2 = 10
     denseFace   = 10
-
-    trainShare = 0.6
-    valShare   = 0.3
-
     pathSaveNetWeightEeg="weights.bestEEG.hdf5"
     pathSaveNetWeightFace="weights.bestFace.hdf5"
     pathSaveNetWeightFLF="weights.bestFLF.hdf5"
