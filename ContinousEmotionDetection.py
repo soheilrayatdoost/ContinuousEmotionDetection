@@ -3,19 +3,18 @@ from scipy.sparse import *
 import numpy as np
 
 import scipy.io as sio
-from scipy.stats.stats import pearsonr
+from scipy.stats import pearsonr
 from sklearn import preprocessing
 
 
 import tensorflow as tf
-from keras.models import Sequential
-from keras.layers import Dense, Flatten, Dropout, LSTM, Masking, concatenate
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Flatten, Dropout, LSTM, Masking, concatenate, TimeDistributed
 
 
 from sklearn.metrics import mean_squared_error
-from keras.layers.wrappers import TimeDistributed
-from keras.callbacks import ModelCheckpoint
-from keras import backend as K
+from tensorflow.keras.callbacks import ModelCheckpoint
+from tensorflow.keras import backend as K
 
 
 
@@ -148,15 +147,15 @@ def networkSeq(inputTensor, outputTensor, maxLen, lstmSize1, lstmSize2, denseSiz
     featSize = np.shape(inputTensor)[2]
     outputSize = np.shape(outputTensor)[2]
     model = Sequential()
-    model.add(Masking(mask_value=0.,batch_input_shape=(None, maxLen, featSize)))
-    model.add(LSTM(lstmSize1 , batch_input_shape=(None, maxLen, featSize), return_sequences=True))
+    model.add(Masking(mask_value=0., input_shape=(maxLen, featSize)))
+    model.add(LSTM(lstmSize1, return_sequences=True))
     model.add(Dropout(0.4))
     model.add(LSTM(lstmSize2, return_sequences=True))
     model.add(Dropout(0.4))
     model.add(TimeDistributed(Dense(32)))
     model.add(Dropout(0.4))
     model.add(TimeDistributed(Dense(outputSize,activation='linear')))
-    model.compile(loss='mse', optimizer='Nadam',sample_weight_mode="temporal")
+    model.compile(loss='mse', optimizer='nadam')
     return model
 
 
@@ -196,7 +195,7 @@ def metricSeq(labelreal, labelPredic, lenSeq):
         #A = min_max_scaler.fit_transform(A)-0.5
         #B = min_max_scaler.fit_transform(B)-0.5
         mse.append(mean_squared_error(predictSeq, realSeq))
-        pearson.append(pearsonr(predictSeq, realSeq)[0])
+        pearson.append(pearsonr(predictSeq.flatten(), realSeq.flatten())[0])
         
     return np.mean(mse), np.sqrt(np.mean(mse)), np.mean(pearson)
 
@@ -228,10 +227,10 @@ if __name__ == '__main__':
     lstmFaceLa1 = 19
     lstmFaceLa2 = 10
     denseFace   = 10
-    pathSaveNetWeightEeg="weights.bestEEG.hdf5"
-    pathSaveNetWeightFace="weights.bestFace.hdf5"
-    pathSaveNetWeightFLF="weights.bestFLF.hdf5"
-    epochs = 25
+    pathSaveNetWeightEeg="weights.bestEEG_old.keras"
+    pathSaveNetWeightFace="weights.bestFace_old.keras"
+    pathSaveNetWeightFLF="weights.bestFLF_old.keras"
+    epochs = 100
     batchSize = 20
 
     dataFolder = './data/Features/'
