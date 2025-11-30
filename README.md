@@ -4,6 +4,8 @@ Analysis of EEG Signals and Facial Expressions for Continuous Emotion Detection 
 
 This codebase implements multimodal emotion detection combining EEG signals and facial expressions, with support for feature-level and decision-level fusion strategies.
 
+> **Note**: This repository is an implementation based on the methodology described in the paper. It is not the original code used to produce the results in the published paper. This is a modernized, refactored version with updated dependencies and best practices.
+
 ## 🚀 Features
 
 - **Multimodal Learning**: Combines EEG and facial expression features
@@ -13,8 +15,10 @@ This codebase implements multimodal emotion detection combining EEG signals and 
   - Face-only model
   - Feature-level fusion (FLF)
   - Decision-level fusion (DLF)
+- **10-Fold Cross-Validation**: Robust evaluation with statistical measures
 - **Modern TensorFlow 2.x**: Updated for compatibility with latest deep learning frameworks
 - **Modular Design**: Clean, maintainable code structure following Python best practices
+- **Type Hints & Docstrings**: Comprehensive documentation for all functions
 
 ## 📋 Requirements
 
@@ -41,35 +45,51 @@ pip install -r requirements.txt
 
 ```
 ContinuousEmotionDetection/
-├── config.py              # Configuration and hyperparameters
-├── data_loader.py         # Data loading utilities
-├── preprocessing.py       # Data preprocessing and normalization
-├── model.py              # Neural network architectures
-├── training.py           # Training utilities
-├── evaluation.py         # Evaluation metrics
-├── main.py               # Main execution script
-├── requirements.txt      # Project dependencies
-└── data/                 # Data directory
-    ├── Features/         # Feature .mat files
-    └── lable_continous_Mahnob.mat
+├── config.py                          # Configuration and hyperparameters
+├── data_loader.py                     # Data loading utilities
+├── preprocessing.py                   # Data preprocessing and normalization
+├── model.py                           # Neural network architectures
+├── training.py                        # Training utilities
+├── evaluation.py                      # Evaluation metrics
+├── cross_validation.py                # Cross-validation utilities
+├── main.py                            # Single train/test split (quick testing)
+├── main_cv.py                         # 10-fold cross-validation (recommended)
+├── requirements.txt                   # Project dependencies
+├── README.md                          # This file
+├── CROSS_VALIDATION_README.md         # Cross-validation guide
+│
+└── data/                              # Data directory
+    ├── Features/                      # Feature .mat files
+    └── lable_continous_Mahnob.mat     # Annotations
 ```
 
 ## 🎯 Usage
 
-### Basic Usage
+### Quick Testing (Single Train/Test Split)
 
-Run the complete pipeline (data loading, training, evaluation):
+For rapid prototyping and testing (runs in ~10-15 minutes):
 
 ```bash
 python main.py
 ```
 
+This uses a single 60/30/10 train/validation/test split.
+
+### Rigorous Evaluation (10-Fold Cross-Validation) ⭐ Recommended
+
+For reliable results and research purposes:
+
+```bash
+python main_cv.py
+```
+
+This performs 10-fold cross-validation and reports mean ± standard deviation for all metrics. See [`CROSS_VALIDATION_README.md`](CROSS_VALIDATION_README.md) for details.
+
 ### Configuration
 
 Edit `config.py` to modify:
 - Network hyperparameters (LSTM sizes, dropout rates)
-- Training parameters (epochs, batch size)
-- Data split ratios (train/validation/test)
+- Training parameters (epochs: 100, batch size: 20)
 - File paths
 
 ### Custom Training
@@ -124,6 +144,17 @@ The system evaluates models using:
 - **RMSE** (Root Mean Squared Error)
 - **Pearson Correlation Coefficient**
 
+### Cross-Validation Results Format
+
+When using `main_cv.py`, results are reported as mean ± standard deviation across 10 folds:
+
+```
+EEG:
+  MSE     = 0.012345 ± 0.001234
+  RMSE    = 0.111111 ± 0.011111
+  Pearson = 0.456789 ± 0.045678
+```
+
 ## 📚 Citation
 
 If you use this code, please cite:
@@ -146,12 +177,21 @@ If you use this code, please cite:
 
 ## 🔄 Recent Updates
 
-- ✅ Refactored into modular, maintainable code structure
-- ✅ Updated to TensorFlow 2.x (from deprecated Keras imports)
-- ✅ Added comprehensive type hints and docstrings
-- ✅ Fixed bugs and improved error handling
-- ✅ Consistent PEP 8 naming conventions (snake_case)
-- ✅ Modern `.keras` model format support
+### December 2025
+- ✅ **10-Fold Cross-Validation**: Implemented rigorous CV for reliable evaluation
+- ✅ **Increased Training**: Updated to 100 epochs for better convergence
+- ✅ **Cross-Validation Module**: Added `cross_validation.py` utility module
+- ✅ **Comprehensive Documentation**: Added CV guide and comparison results
+
+### November 2025
+- ✅ **Complete Refactoring**: Modular structure with 8 separate modules
+- ✅ **TensorFlow 2.x Migration**: Updated from deprecated Keras imports
+- ✅ **Type Hints & Docstrings**: Full type annotations and documentation
+- ✅ **Bug Fixes**: Fixed global variable issues and deprecated APIs
+- ✅ **PEP 8 Compliance**: Consistent snake_case naming conventions
+- ✅ **Modern Format**: Using `.keras` model format (TF 2.x standard)
+- ✅ **GPU Support**: Added GPU detection and setup guide
+- ✅ **Validation**: Compared old vs new implementations for equivalence
 
 ## 📝 License
 
@@ -161,9 +201,42 @@ See [LICENSE](LICENSE) file for details.
 
 Contributions are welcome! Please feel free to submit a Pull Request.
 
-## ⚠️ Notes
+## 📖 Additional Documentation
 
-- Ensure your data files are in the correct format (.mat files)
-- The code handles variable-length sequences using masking
-- Models are saved in `.keras` format (TensorFlow 2.x standard)
-- Subject-wise normalization is applied to features
+- **[CROSS_VALIDATION_README.md](CROSS_VALIDATION_README.md)** - Complete guide to 10-fold CV
+
+## 🎓 Research & Development
+
+### For Development & Testing
+Use `main.py` for quick iterations:
+- Faster execution (~10-15 minutes)
+- Good for debugging and hyperparameter exploration
+- Single train/validation/test split
+
+### For Research & Publication
+Use `main_cv.py` for final evaluation:
+- More reliable results (~3-4 hours)
+- 10-fold cross-validation with statistical measures
+- Standard practice for machine learning research
+- Reports mean ± standard deviation
+
+## 🔍 Code Versions
+
+This repository contains multiple implementations:
+
+1. **`main_cv.py`** ⭐ - Recommended: Refactored code with 10-fold CV
+2. **`main.py`** - Refactored code with single split (quick testing)
+3. **`ContinousEmotionDetection_cv.py`** - Original code with 10-fold CV
+4. **`ContinousEmotionDetection.py`** - Original monolithic code (reference)
+
+All implementations produce functionally equivalent results. See [COMPARISON_RESULTS.md](COMPARISON_RESULTS.md) for validation.
+
+## ⚠️ Important Notes
+
+- **Not Original Paper Code**: This is a reimplementation of the paper's methodology, not the exact code used for the published results
+- **Data Format**: Ensure your data files are in the correct format (.mat files)
+- **Variable-Length Sequences**: Code handles variable-length sequences using masking
+- **Model Format**: Models are saved in `.keras` format (TensorFlow 2.x standard)
+- **Normalization**: Subject-wise normalization is applied to features
+- **Training Time**: 10-fold CV takes ~3-4 hours on CPU; use GPU for faster training
+- **Reproducibility**: Use fixed random seeds for reproducible results
